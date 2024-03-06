@@ -1,14 +1,6 @@
-/**
- * v0 by Vercel.
- * @see https://v0.dev/t/ytVKbC75sUX
- * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
- */
 import { Button } from "@/components/ui/button"
 import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
-import Link from "next/link"
-import { NavigationMenuLink, NavigationMenuList, NavigationMenu } from "@/components/ui/navigation-menu"
-import { AvatarImage, Avatar } from "@/components/ui/avatar"
-import { CardContent, Card } from "@/components/ui/card"
+import { NavigationMenuList, NavigationMenu } from "@/components/ui/navigation-menu"
 
 export default function Component() {
   return (
@@ -39,9 +31,9 @@ export default function Component() {
             </div>
           </SheetContent>
         </Sheet>
-        <a className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-gray px-4 py-2 text-3xl font-bold mr-5" href="#">
+        <a className="group inline-flex h-9 w-max items-center justify-center text-white rounded-md bg-gray px-4 py-2 text-3xl font-bold mr-5" href="#">
         <MountainIcon className="h-9 w-9 mr-5" />
-          ProxyHub
+          Proxy <p className="bg-yellow-600 rounded text-black"> Hub</p>
         </a>
         <NavigationMenu className="hidden lg:flex">
           <NavigationMenuList>
