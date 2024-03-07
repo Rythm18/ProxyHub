@@ -2,6 +2,7 @@ const express = require('express');
 const AttendanceRequest = require('../../models/AttendanceRequest');
 const RequestTrack = require('../../models/RequestTract');
 const isAuthenticated = require('../../middleware/user-auth');
+const User = require('../../models/User');
 const router = express.Router();
 
 // POST /user
@@ -24,11 +25,13 @@ router.post('/request-attendance', isAuthenticated, async (req, res) => {
 
 // GET /requests
 
-router.get('/requestsUsers', isAuthenticated, async (req, res) => {
+router.get('/requestsUsers',isAuthenticated, async (req, res) => {
   try {
     const requests = await AttendanceRequest.find({ user: req.session.userId });
-    res.status(200).json(requests);
+    const data = await User.findById(req.session.userId);
+    res.status(200).json({requests});
   } catch (error) {
+    console.error(error);
     res.status(500).json({ message: 'Failed to fetch attendance requests' });
   }
 });

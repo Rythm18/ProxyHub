@@ -22,6 +22,8 @@ router.post('/login', async (req, res) => {
     const user = await User.findOne({ enrollment });
     if (user && user.password === password) {
       req.session.userId = user._id;
+      console.log(req.session.userId);
+      console.log(user._id);
       res.status(200).json({ message: 'Login successful' });
     } else { 
       res.status(401).json({ message: 'Invalid credentials' });
@@ -30,6 +32,8 @@ router.post('/login', async (req, res) => {
     res.status(500).json({ message: 'Failed to login' });
   }
 });
+
+
 
 router.get('/users',isAuthenticated, async (req, res) => {
   try {

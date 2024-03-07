@@ -4,14 +4,90 @@
  * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
  */
 import { CardTitle, CardDescription, CardContent, Card } from "@/components/ui/card"
+import { SheetTrigger, SheetContent, Sheet } from "@/components/ui/sheet"
 import { Button } from "@/components/ui/button"
-import { SVGProps } from "react"
+import { SVGProps, useEffect, useState } from "react"
 import { JSX } from "react/jsx-runtime"
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+
+interface UserData {
+  user: string;
+  class: string;
+  branch: string;
+  semester: string;
+  time: string;
+}
+
+axios.defaults.withCredentials = true;
 
 export default function Component() {
+  const [userData, setUserData] = useState<UserData[]>([]);
+
+  const requestData = async () => {
+    try {
+      const response = await axios.get('http://localhost:3000/requestsUsers');
+      console.log(response);
+      if (response.status === 200) {
+        console.log('Request successful');
+        setUserData(response.data);
+      } else if (response.status === 401) {
+        navigate('/login');
+      }
+    } catch (error) {
+      console.error('Error during Request:', error);
+    }
+  };
+
+  useEffect(() => {
+    requestData();
+  }, []);
+
+
+  const navigate = useNavigate();
+  // const handleLogout = async () => {
+  //   try {
+  //     const response = await axios.post('http://localhost:3000/logout');
+  
+  //     if (response.status === 200) {
+  //       navigate('/');
+  //     } else {
+  //       console.error('Logout failed');
+  //     }
+  //   } catch (error) {
+  //     console.error('Error during logout:', error);
+  //   }
+  // };
+
+
+
   return (
-    <div key="1" className="bg-[#1a1a1a] min-h-screen">
-      <nav className="flex justify-between items-center p-4 bg-[#333] text-white">
+
+    <div key="1" className="bg-[ rgb(2 6 23)] min-h-screen md:px-6">
+        <Sheet>
+          <SheetTrigger asChild>
+            <Button className="lg:hidden" size="icon" variant="outline">
+              <span className="sr-only">Toggle navigation menu</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="left">
+            <a className="group inline-flex h-9 w-max items-center justify-center rounded-md bg-gray px-4 py-2 text-2xl font-bold " href="#">
+              ProxyHub
+            </a>
+            <div className="grid gap-2 py-6">
+              <a className="flex w-full items-center py-4 text-lg font-bold" href="#">
+                About
+              </a>
+              <a className="flex w-full items-center py-2 text-lg font-semibold" href="#">
+                Pricing
+              </a>
+              <a className="flex w-full items-center py-2 text-lg font-semibold" href="#">
+                Contact
+              </a>
+            </div>
+          </SheetContent>
+        </Sheet>
+      <nav className="flex justify-between items-center p-4 bg-[#333] text-white hidden lg:flex">
         <div className="flex items-center space-x-4">
           <FlagIcon className="text-white h-8 w-8" />
           <span className="font-bold text-lg">Brand</span>
@@ -31,68 +107,32 @@ export default function Component() {
           </a>
         </div>
         <div>
-          <button className="bg-[#333] hover:bg-gray-700 text-white font-medium py-2 px-4 rounded">Logout</button>
+          <button  className="bg-[#333] hover:bg-gray-700 text-white font-medium py-2 px-4 rounded">Logout</button>
         </div>
       </nav>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
-        <Card className="bg-[#333] text-white">
-          <CardContent className="pt-7">
-            <CardTitle className="text-2xl font-bold">UI Design</CardTitle>
-            <CardDescription className="flex gap-5 text-xl text-slate ">
-                <p>Class:</p> <p>Branch:</p> <p>Semester:</p> <p>Date and Time: </p>
-            </CardDescription>
-            <Button className="mt-3 bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded">
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="bg-[#333] text-white">
-          <CardContent className="pt-7">
-            <CardTitle>UX Design</CardTitle>
-            <CardDescription>
-                
-            </CardDescription>
-            <Button className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded">
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="bg-[#333] text-white">
-          <CardContent>
-            <CardTitle>UX Research</CardTitle>
-            <CardDescription>We continuously user test to ensure we are addressing user needs.</CardDescription>
-            <Button className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium py-2 px-4 rounded">
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="bg-[#333] text-white">
-          <CardContent>
-            <CardTitle>Interaction & Motion</CardTitle>
-            <CardDescription>Providing moments of delight</CardDescription>
-            <Button className="bg-purple-500 hover:bg-purple-600 text-white font-medium py-2 px-4 rounded">
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="bg-[#333] text-white">
-          <CardContent>
-            <CardTitle>UX Writing</CardTitle>
-            <CardDescription>Wording things</CardDescription>
-            <Button className="bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded">
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
-        <Card className="bg-[#333] text-white">
-          <CardContent>
-            <CardTitle>Prototyping</CardTitle>
-            <CardDescription>We love to progress our designs to a state that feels real</CardDescription>
-            <Button className="bg-indigo-500 hover:bg-indigo-600 text-white font-medium py-2 px-4 rounded">
-              Learn More
-            </Button>
-          </CardContent>
-        </Card>
+          {userData.map((data, index) => (
+          <Card key={index} className="bg-[#333] text-white">
+            <CardContent className="pt-7">
+              <CardTitle className="text-xl font-bold mb-2">{data.user}</CardTitle>
+              <CardDescription className="flex gap-5 text-xl text-slate">
+                <div className="sm:flex sm:flex-wrap">
+                  <div className="sm:w-1/2">
+                    <p className="sm:text-lg md:text-lg lg:text-xl xl:text-2xl">Class: {data.class}</p>
+                    <p className="sm:text-lg md:text-lg lg:text-xl xl:text-2xl">Branch: {data.branch}</p>
+                  </div>
+                  <div className="sm:w-1/2">
+                    <p className="sm:text-lg md:text-lg lg:text-xl xl:text-2xl">Semester: {data.semester}</p>
+                    <p className="sm:text-lg md:text-lg lg:text-xl xl:text-2xl">Time: {data.time}</p>
+                  </div>
+                </div>
+              </CardDescription>
+              <Button className="mt-3 bg-pink-500 hover:bg-pink-600 text-white font-medium py-2 px-4 rounded">
+                Request
+              </Button>
+            </CardContent>
+          </Card>
+        ))}
       </div>
     </div>
   )

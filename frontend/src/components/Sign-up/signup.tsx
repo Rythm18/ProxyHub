@@ -16,9 +16,38 @@ import {
     SelectTrigger,
     SelectValue,
   } from "@/components/ui/select"
+import { useNavigate } from "react-router-dom"
+import { useState } from "react"
+import axios from "axios"
 
 
 export default function Component() {
+  const navigate = useNavigate();
+  const [username, setUsername] = useState('');
+  const [enrollment, setEnrollment] = useState('');
+  const [password, setPassword] = useState('');
+  const [branch, setBranch] = useState('');
+  
+  const handleSignUp = async () => {
+    try {
+      const response = await axios.post('http://localhost:3000/createUser', {
+        username,
+        enrollment,
+        password,
+        branch,
+      });
+
+      if (response.status === 201) {
+        navigate('/hub');
+        console.log('Sign Up successful');
+      } else {
+        console.error('Sign Up failed');
+      }
+    } catch (error) {
+      console.error('Error during Sign Up:', error);
+    }
+  }
+
   return (
     <main className="flex items-center justify-center min-h-screen">
       <Card className="p-8 bg-gray-100 dark:bg-gray-800 rounded-lg">
@@ -39,6 +68,8 @@ export default function Component() {
               placeholder="Enter your username"
               required
               type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
             />
           </div>
           <div className="space-y-4">
@@ -51,6 +82,8 @@ export default function Component() {
               placeholder="Enter your enrollment number"
               required
               type="text"
+              value={enrollment}
+              onChange={(e) => setEnrollment(e.target.value)}
             />
           </div>
           <div className="space-y-4">
@@ -62,32 +95,46 @@ export default function Component() {
               id="password"
               required
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
           </div>
           <div className="space-y-4">
             <Label className="text-lg font-semibold" htmlFor="branch">
               Branch
             </Label>
-            <Select>
-                <SelectTrigger className="w-[180px]">
-                    <SelectValue placeholder="Select your branch" />
-                </SelectTrigger>
-                <SelectContent>
-                    <SelectGroup>
-                    <SelectLabel>Branches</SelectLabel>
-                    <SelectItem value="ce">CE</SelectItem>
-                    <SelectItem value="it">IT</SelectItem>
-                    <SelectItem value="csbs">CSBS</SelectItem>
-                    <SelectItem value="ceai">CE-AI</SelectItem>
-                    <SelectItem value="iot">IOT</SelectItem>
-                    <SelectItem value="d2d">D2D</SelectItem>
-                    </SelectGroup>
-                </SelectContent>
-                </Select>
+            <Select onValueChange={(value) => setBranch(value)}>
+            <SelectTrigger className="w-[180px]">
+              <SelectValue placeholder="Select your Branch"></SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Branches</SelectLabel>
+                <SelectItem value="ce">
+                  CE
+                </SelectItem>
+                <SelectItem value="it">
+                  IT
+                </SelectItem>
+                <SelectItem value="csbs">
+                  CSBS
+                </SelectItem>
+                <SelectItem value="ceai">
+                  CE-AI
+                </SelectItem>
+                <SelectItem value="iot">
+                  IOT
+                </SelectItem>
+                <SelectItem value="d2d">
+                  D2D
+                </SelectItem>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
           </div>
         </CardContent>
         <CardFooter>
-          <Button className="w-full py-3 bg-gray-900 text-white font-semibold rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
+          <Button onClick={handleSignUp} className="w-full py-3 bg-gray-900 text-white font-semibold rounded-md shadow-md hover:bg-gray-800 focus:outline-none focus:ring focus:ring-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
            <a href="/hub"> Register</a>
           </Button>
         </CardFooter>

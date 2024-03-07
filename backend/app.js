@@ -2,15 +2,21 @@ const express = require('express');
 const session = require('express-session');
 const mongoose = require('mongoose');
 const MongoStore = require('connect-mongo')(session);
-
+const cors = require('cors');
 const app = express();
+const corsOptions = {
+  origin: 'http://localhost:5173',
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 app.use(
     session({
-      secret: 'chugimeengachimo', // Change this to a secure, random key
+      secret: 'chugimeengachimo', 
       resave: false,
       saveUninitialized: false,
       store: new MongoStore({ mongooseConnection: mongoose.connection }),
-      cookie: { maxAge: 24 * 60 * 60 * 1000 }, // Session duration in milliseconds (e.g., 1 day)
+      cookie: { maxAge: 24 * 60 * 60 * 1000 }, 
     })
   );
 
